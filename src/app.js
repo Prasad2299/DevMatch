@@ -12,6 +12,11 @@ app.get("/user/:userId",(req,res)=>{
   res.send({name:"prasad"})
 })
 
+app.get("/user/:userId/:name",(req,res)=>{
+  console.log(req.params)// to acces data from dynamic values from request parameter
+  res.send({name:"prasad"})
+})
+
 
 app.post("/user",(req,res)=>{
   res.send("data saved to db successfully!")
