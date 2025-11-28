@@ -3,6 +3,7 @@ const express = require("express")
 const app = express()
 
 app.get("/user",(req,res)=>{
+  console.log(req.query)// to acces data from req.query parameter
   res.send({name:"prasad"})
 })
 
