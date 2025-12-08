@@ -2,27 +2,24 @@ const express = require("express");
 
 const app = express();
 
+app.use("/admin",(req,res,next)=>{
+  const token = "xyz"
+  const isAdminAutherized = token === "xyz"
+  if(!isAdminAutherized){
+    res.status(401).send("Unauthorized Admin!!!")
+  }else{
+    next()
+  }
+})
 
 app.get("/admin/getAllData",(req,res)=>{
   console.log("get All data")
-  const token = "xyz"
-  const isAdminAutherized = token === "xyz"
-  if(isAdminAutherized){
-    res.send("data has been fetched!")
-  }else{
-    res.status(401).send("Unauthorized Admin!!!")
-  }
+  res.send("data fetched!")
 })
 
 app.delete("/admin/deleteData",(req,res)=>{
   console.log("get All data")
-  const token = "xyz"
-  const isAdminAutherized = token === "xyz"
-  if(isAdminAutherized){
-    res.send("data has been deletedS!")
-  }else{
-    res.status(401).send("Unauthorized Admin!!!")
-  }
+  res.send("data deleted!!")
 })
 
 
