@@ -4,9 +4,10 @@ const app = express();
 
 app.use(
   "/users",
-  (req, res) => {
+  (req, res,next) => {
     console.log("Response 1");
     res.send("Response 1");
+    next()
   },
   (req, res) => {
     console.log("Response 2");
