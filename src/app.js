@@ -15,14 +15,14 @@ app.post("/signup",async(req,res)=>{
     password:"pr123@"
   }
 
-  const user = new User(userObj) // create new instance of user model
+  const user = new User(req.body) // create new instance of user model
 
   try {
     await user.save()
     res.send("User created successfully!")
   } catch (error) {
     console.log("error saving user",error.message) 
-    res.status(400).send("Error saving user")
+    res.status(400).send("Error saving user"+error)
   }
 })
 
@@ -93,7 +93,7 @@ app.patch("/user",async(req,res)=>{
   const id = req.body.id
   const data = req.body
   try {
-    await User.findByIdAndUpdate(id,data)
+    await User.findByIdAndUpdate(id,data,{runValidators:true})
     res.status(200).send("user updated successfully!")
   } catch (error) {
     res.status(400).send("something went wrong!")
