@@ -49,7 +49,7 @@ app.post("/login",async(req,res)=>{
 
     if(isPasswordMatch){
       //create JWT token
-      const token = await jwt.sign({_id:user._id},"DEVMATCH")
+      const token = await jwt.sign({_id:user._id},"DEVMATCH",{expiresIn:"1d"})
 
       //ADD TOKEN TO COOKIE AND SEND RESPONSE BACK TO USER
       res.cookie("token",token)
@@ -73,6 +73,14 @@ app.get("/profile",authUser,async(req,res)=>{
   }
 })
 
+app.post("/sendConnectionRequest",authUser,(req,res)=>{
+  try {
+    const user = req.user
+    res.send(user.firstName + " sent connection request")
+  } catch (error) {
+    res.status(400).send("bad request")
+  }
+})
 
 // get user by id
 
