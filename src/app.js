@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
+const {authUser} = require('./middlewares/auth')
 
 const app = express();
 
@@ -63,19 +64,9 @@ app.post("/login",async(req,res)=>{
 
 //user profile
 
-app.get("/profile",async(req,res)=>{
+app.get("/profile",authUser,async(req,res)=>{
   try {
-    const cookies = req.cookies
-    const {token} = cookies
-    
-    //validate my token
-
-    const decodedMsg = await jwt.verify(token,"DEVMATCH")
-
-    const {_id} = decodedMsg;
-
-    const user = await User.findById(_id)
-    console.log("Reading cookies")
+    const user = req.user
     res.send("Logged in user :" + user)
   } catch (error) {
     res.status(500).send("Internal server error!")
