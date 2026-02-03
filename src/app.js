@@ -4,10 +4,13 @@ const { User } = require("./models/user");
 const {validateSignup} = require('./utils/validation')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
 
 const app = express();
 
 app.use(express.json())
+app.use(cookieParser())
 
 app.post("/signup",async(req,res)=>{
   console.log(req.body)
@@ -42,7 +45,13 @@ app.post("/login",async(req,res)=>{
       res.status(404).send("invalid credentiala!")
     }
     const isPasswordMatch = await bcrypt.compare(password,user.password)
+
     if(isPasswordMatch){
+      //create JWT token
+      const token = await jwt.sign({_id:user._id},"DEVMATCH")
+
+      //ADD TOKEN TO COOKIE AND SEND RESPONSE BACK TO USER
+      res.cookie("token",token)
       res.status(200).send("Login Successfully!")
     }else{
       throw new Error("invalid credential!")
@@ -51,6 +60,28 @@ app.post("/login",async(req,res)=>{
     res.status(400).send("Error"+error)
   }
 })
+
+//user profile
+
+app.get("/profile",async(req,res)=>{
+  try {
+    const cookies = req.cookies
+    const {token} = cookies
+    
+    //validate my token
+
+    const decodedMsg = await jwt.verify(token,"DEVMATCH")
+
+    const {_id} = decodedMsg;
+
+    const user = await User.findById(_id)
+    console.log("Reading cookies")
+    res.send("Logged in user :" + user)
+  } catch (error) {
+    res.status(500).send("Internal server error!")
+  }
+})
+
 
 // get user by id
 
