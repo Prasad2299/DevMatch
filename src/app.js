@@ -47,10 +47,12 @@ app.post("/login",async(req,res)=>{
     }
     const isPasswordMatch = await bcrypt.compare(password,user.password)
 
+    // const isPasswordMatch = await user.validatePassword(password)
+
     if(isPasswordMatch){
       //create JWT token
       const token = await jwt.sign({_id:user._id},"DEVMATCH",{expiresIn:"1d"})
-
+      // const token = await user.getJWT();
       //ADD TOKEN TO COOKIE AND SEND RESPONSE BACK TO USER
       res.cookie("token",token)
       res.status(200).send("Login Successfully!")
