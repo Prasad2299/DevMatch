@@ -48,7 +48,7 @@ authRouter.post("/login",async(req,res)=>{
       const token = await jwt.sign({_id:user._id},"DEVMATCH",{expiresIn:"1d"})
       // const token = await user.getJWT();
       //ADD TOKEN TO COOKIE AND SEND RESPONSE BACK TO USER
-      res.cookie("token",token)
+      res.cookie("token",token)// expires inside object we can pass to expire cookie
       res.status(200).send("Login Successfully!")
     }else{
       throw new Error("invalid credential!")
@@ -57,5 +57,20 @@ authRouter.post("/login",async(req,res)=>{
     res.status(400).send("Error"+error)
   }
 })
+
+authRouter.post("/logout",async(req,res)=>{
+  try {
+    res.cookie("token",null,{
+      expires: new Date(Date.now())
+    })
+    res.status(200).send("Logout successfully!")
+  } catch (error) {
+    console.log(error)
+    res.status(400).send("Unable to logout!",error)
+  }
+})
+
+
+
 
 module.exports = authRouter
