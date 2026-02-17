@@ -27,11 +27,11 @@ requestRouter.post("/request/send/:status/:toUserId",authUser,async(req,res)=>{
 
     console.log(fromUserId.equals(toUserId))
 
-    if(fromUserId.equals(toUserId)){
-      return res.status(400).json({
-        message:'You cannot sent request to yourself!'
-      })
-    }
+    // if(fromUserId.equals(toUserId)){
+    //   return res.status(400).json({
+    //     message:'You cannot sent request to yourself!'
+    //   })
+    // }
     
     //if toUserId is not there into DB.
 

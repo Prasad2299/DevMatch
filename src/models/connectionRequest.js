@@ -19,13 +19,20 @@ const connectionRequestSchema = new mongoose.Schema({
   }
 },{timestamps:true})
 
+
+//indexing(compound indexing)
+
+connectionRequestSchema.index({fromUserId:1,toUserId:1})
+
 // schema level validation
 connectionRequestSchema.pre("save",function(next){
   const connRequest = this
   //check fronuserid is same as touserid
+  console.log("schema level validation")
   if(connRequest.fromUserId.equals(connRequest.toUserId)){
     throw new Error("You cannnot send request to yourself!")
   }
+  console.log("if there is no schema level validation")
   next()
 })
 
