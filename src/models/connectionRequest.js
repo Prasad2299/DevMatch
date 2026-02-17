@@ -19,6 +19,16 @@ const connectionRequestSchema = new mongoose.Schema({
   }
 },{timestamps:true})
 
+// schema level validation
+connectionRequestSchema.pre("save",function(next){
+  const connRequest = this
+  //check fronuserid is same as touserid
+  if(connRequest.fromUserId.equals(connRequest.toUserId)){
+    throw new Error("You cannnot send request to yourself!")
+  }
+  next()
+})
+
 const ConnectionRequest = new mongoose.model("ConnectionRequest",connectionRequestSchema)
 
 module.exports = ConnectionRequest
