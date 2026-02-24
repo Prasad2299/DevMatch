@@ -27,11 +27,11 @@ requestRouter.post("/request/send/:status/:toUserId",authUser,async(req,res)=>{
 
     console.log(fromUserId.equals(toUserId))
 
-    // if(fromUserId.equals(toUserId)){
-    //   return res.status(400).json({
-    //     message:'You cannot sent request to yourself!'
-    //   })
-    // }
+    if(fromUserId.equals(toUserId)){
+      return res.status(400).json({
+        message:'You cannot sent request to yourself!'
+      })
+    }
     
     //if toUserId is not there into DB.
 
@@ -69,4 +69,43 @@ requestRouter.post("/request/send/:status/:toUserId",authUser,async(req,res)=>{
   }
 })
 
+requestRouter.post("/request/review/:status/:requestId",authUser,async(req,res)=>{
+  try {
+    
+    const loggedInUser = req.user;
+    const {status,requestId} = req.params;
+    const allowStatus = ["accepted","rejected"];
+    if(!allowStatus.includes(status)){
+      return res.status(400).json({
+        message:'Status not valid!'
+      })
+    }
+
+    const connRequest = await ConnectionRequest.findOne({
+      _id:requestId,
+      toUserId:loggedInUser._id,
+      status:"interested"
+    })
+
+    if(!connRequest){
+      return res.status(404).json({
+        message:'Connection request not found!'
+      })
+    }
+
+    connRequest.status = status;
+    const data = await connRequest.save()
+
+    res.status(200).json({
+      message:`Connection request ${status}!`,
+      data
+    })
+
+   } catch (error) {
+    res.status(400).json({
+      message:'Something went wrong!',
+      error
+    })
+  }
+})
 module.exports = requestRouter
